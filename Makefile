@@ -13,23 +13,20 @@ equi1:	equi.h equi_miner.h equi_miner.cpp Makefile
 equi1g:	equi.h equi_miner.h equi_miner.cpp Makefile
 	g++ -g -DLOGSPARK -DSPARKSCALE=11 equi_miner.cpp blake/blake2b.cpp -pthread -o equi1g
 
-equi965:	equi.h equi_miner.h equi_miner.cpp Makefile
-	$(GPP) -DWN=96 -DWK=5 equi_miner.cpp blake/blake2b.cpp -o equi965
-
 equi1445:	equi.h equi_miner.h equi_miner.cpp Makefile
-	$(GPP) -DWN=144 -DWK=5 equi_miner.cpp blake/blake2b.cpp -o equi1445
+	$(GPP) -DRESTBITS=4 -DWN=144 -DWK=5 equi_miner.cpp blake/blake2b.cpp -o equi1445
 
 dev1:	equi.h dev_miner.h dev_miner.cpp Makefile
 	$(GPP) -DRESTBITS=8 dev_miner.cpp blake/blake2b.cpp -o dev1
 
 eqcuda:	equi_miner.cu equi.h blake2b.cu Makefile
-	nvcc -arch sm_35 equi_miner.cu blake/blake2b.cpp -o eqcuda
+	nvcc -DXINTREE -DUNROLL -arch sm_35 equi_miner.cu blake/blake2b.cpp -o eqcuda
+
+devcuda:	dev_miner.cu equi.h blake2b.cu Makefile
+	nvcc -DXINTREE -DUNROLL -arch sm_35 dev_miner.cu blake/blake2b.cpp -o devcuda
 
 eqcuda1445:	equi_miner.cu equi.h blake2b.cu Makefile
-	nvcc -DWN=144 -DWK=5 -DXWITHASH -arch sm_35 equi_miner.cu blake/blake2b.cpp -o eqcuda1445
-
-feqcuda:	equi_miner.cu equi.h blake2b.cu Makefile
-	nvcc -DUNROLL -DJOINHT -arch sm_35 equi_miner.cu blake/blake2b.cpp -o feqcuda
+	nvcc -DWN=144 -DWK=5 -arch sm_35 equi_miner.cu blake/blake2b.cpp -o eqcuda1445
 
 verify:	equi.h equi.c Makefile
 	g++ -g equi.c blake/blake2b.cpp -o verify
@@ -44,4 +41,4 @@ spark:	equi1g
 	time ./equi1g
 
 clean:	
-	rm equi equi1 equi1g equi965 equi1445 eqcuda eqcuda1445 feqcuda verify
+	rm equi equi1 equi1g equi1445 eqcuda eqcuda1445 feqcuda verify
